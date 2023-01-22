@@ -18,7 +18,7 @@ using namespace std;
 RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup {
-    
+
     return YES;
 }
 
@@ -39,8 +39,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 
     example::install(*(facebook::jsi::Runtime *)jsiRuntime);
     install(*(facebook::jsi::Runtime *)jsiRuntime, self);
-  
-   
+
+
     return @true;
 }
 
@@ -48,7 +48,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 - (NSString *) getModel {
     struct utsname systemInfo;
     uname(&systemInfo);
-    
+
     return [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
 }
 
@@ -73,14 +73,14 @@ static void install(jsi::Runtime &jsiRuntime, SimpleJsi *simpleJsi) {
                                                                    const Value &thisValue,
                                                                    const Value *arguments,
                                                                    size_t count) -> Value {
-        
+
         jsi::String deviceName = convertNSStringToJSIString(runtime, [simpleJsi getModel]);
-        
+
         return Value(runtime, deviceName);
     });
-    
+
     jsiRuntime.global().setProperty(jsiRuntime, "getDeviceName", move(getDeviceName));
-    
+
     auto setItem = Function::createFromHostFunction(jsiRuntime,
                                                     PropNameID::forAscii(jsiRuntime,
                                                                          "setItem"),
@@ -89,18 +89,18 @@ static void install(jsi::Runtime &jsiRuntime, SimpleJsi *simpleJsi) {
                                                              const Value &thisValue,
                                                              const Value *arguments,
                                                              size_t count) -> Value {
-        
+
         NSString *key = convertJSIStringToNSString(runtime, arguments[0].getString(runtime));
         NSString *value = convertJSIStringToNSString(runtime, arguments[1].getString(runtime));
-        
+
         [simpleJsi setItem:key :value];
-        
+
         return Value(true);
     });
-    
+
     jsiRuntime.global().setProperty(jsiRuntime, "setItem", move(setItem));
-    
-    
+
+
     auto getItem = Function::createFromHostFunction(jsiRuntime,
                                                     PropNameID::forAscii(jsiRuntime,
                                                                          "getItem"),
@@ -109,18 +109,18 @@ static void install(jsi::Runtime &jsiRuntime, SimpleJsi *simpleJsi) {
                                                              const Value &thisValue,
                                                              const Value *arguments,
                                                              size_t count) -> Value {
-        
+
         NSString *key = convertJSIStringToNSString(runtime, arguments[0].getString(runtime));
-        
+
         NSString *value = [simpleJsi getItem:key];
-        
+
         return Value(runtime, convertNSStringToJSIString(runtime, value));
     });
-    
+
     jsiRuntime.global().setProperty(jsiRuntime, "getItem", move(getItem));
-    
-    
-    
+
+
+
 }
 
 

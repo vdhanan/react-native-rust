@@ -18,7 +18,9 @@ const simpleJsiModule: {
   getDeviceName(): string;
   setItem(key: string, value: string): boolean;
   getItem(key: string): string;
-  foo(callback:(error:string | undefined,value:string | undefined) => void):void
+  foo(
+    callback: (error: string | undefined, value: string | undefined) => void
+  ): void;
   //@ts-ignore
 } = global;
 
